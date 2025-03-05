@@ -1,77 +1,55 @@
+# MentorBitPotenciometroLineal
 
+Librería para el uso de potenciómetros lineales con LEDs integrados en módulos compatibles con MentorBit.
 
-# MentorBit-PoteLineal
-Esta librería está construida por Digital Codesign para utilizar el módulo de Potenciómetro Lineal de MentorBit, principalmente diseñado para el kit educacional "MentorBit".
+## Descripción
 
-Puedes encontrar nuestro MentorBit y mucho más material de electrónica y robótica en nuestra tienda oficial:  [https://digitalcodesign.com/shop](https://digitalcodesign.com/shop)
+La librería `MentorBitPotenciometroLineal` facilita la lectura de potenciómetros lineales con LEDs integrados, comunicándose a través del protocolo I2C, en módulos compatibles con MentorBit. Permite leer la posición del potenciómetro, configurar el comportamiento de los LEDs (encendido/apagado automático o control individual), y cambiar la dirección I2C del módulo.
 
-# Modo de empleo
+## Modo de Empleo
 
-Una vez tengamos la librería instalada desde el Arduino IDE, debemos incluir la librería con la siguiente línea:
+1.  **Instalación:**
+    * Abre el IDE compatible con MentorBit.
+    * Ve a "Herramientas" -> "Gestionar librerías..."
+    * Busca "MentorBitPotenciometroLineal" e instálala.
 
-```
-#include <MentorBitPoteLineal.h>
-```
+2.  **Ejemplo básico:**
+
+    ```c++
+    #include <MentorBitPotenciometroLineal.h>
+
+    MentorBitPoteLineal pote; // Crea un objeto para el potenciómetro lineal
+
+    void setup() {
+      Serial.begin(9600);
+      pote.configurarLeds(pote.LEDS_ENCENDIDOS); // Enciende los LEDs automáticamente
+    }
+
+    void loop() {
+      uint16_t valor = pote.obtenerLectura(); // Obtiene la lectura del potenciómetro
+      Serial.print("Valor del potenciómetro: ");
+      Serial.println(valor);
+      delay(100);
+    }
+    ```
+
+## Constructor y Métodos Públicos
 
 ### Constructor
 
-Una vez incluida la librería, usamos el constructor para crear el objeto del módulo de potenciómetro lineal y definimos la dirección I2C del módulo (por defecto es `0x18`):
+* `MentorBitPoteLineal(uint8_t i2c_addr = 0x18)`: Crea un objeto `MentorBitPoteLineal`.
+    * `i2c_addr`: Dirección I2C del módulo. El valor predeterminado es `0x18`.
 
-```
-MentorBitPoteLineal poteLineal(DIRECCION_I2C);
-```
+### Métodos
 
-Si no se pasa una dirección, la dirección por defecto será `0x18`.
+* `uint16_t obtenerLectura()`: Devuelve la lectura del potenciómetro (un valor de 16 bits).
+* `void configurarLeds(uint8_t modo_leds)`: Configura el modo de funcionamiento de los LEDs.
+    * `modo_leds`: Puede ser `LEDS_APAGADOS` (apaga los LEDs), `LEDS_ENCENDIDOS` (enciende los LEDs automáticamente según la posición del potenciómetro) o `LED_INDIVIDUAL` (permite controlar LEDs individuales).
+* `void encenderLed(uint8_t numero_led)`: Enciende un LED individual.
+    * `numero_led`: Número del LED a encender (0-7).
+* `void cambiarDireccionI2c(uint8_t i2c_addr)`: Cambia la dirección I2C del módulo.
+    * `i2c_addr`: Nueva dirección I2C.
 
-### Uso
+## Constantes Públicas
 
-Con el objeto `poteLineal` definido, podemos obtener la lectura del potenciómetro utilizando la función `obtenerLectura()`, que devuelve el valor analógico leído desde el potenciómetro:
-
-```
-uint16_t lectura = poteLineal.obtenerLectura();
-```
-
-El valor devuelto es un número entre 0 y 1023, correspondiente al valor de la lectura analógica del potenciómetro.
-
-### Configuración de LEDs
-
-Puedes controlar los LEDs del módulo utilizando la función `configurarLeds()`. Hay tres modos disponibles para configurar los LEDs:
-
-- `LEDS_APAGADOS`: Apaga todos los LEDs del módulo.
-- `LEDS_ENCENDIDOS`: Enciende todos los LEDs del módulo en función de la posición del potenciómetro.
-- `LED_INDIVIDUAL`: Enciende un único LED individual que se aproximará a la posición del potenciómetro.
-
-```
-poteLineal.configurarLeds(poteLineal.LEDS_ENCENDIDOS);
-```
-
-### Encender un LED individual
-
-Si deseas encender un solo LED, puedes usar la función `encenderLed()`, pasando como parámetro el número de LED que quieres encender:
-
-```
-poteLineal.encenderLed(NUMERO_LED);
-```
-
-Recuerda que al encender un LED individual, se deshabilita el encendido automático de los LEDs.
-
-### Cambiar dirección I2C
-
-Si necesitas cambiar la dirección I2C del módulo, puedes utilizar la función `cambiarDireccionI2c()`:
-
-```
-poteLineal.cambiarDireccionI2c(NUEVA_DIRECCION_I2C);
-```
-
-Este cambio de dirección se mantiene incluso si se desconecta la alimentación del módulo.
-
-### Atributos
-
-- `LEDS_APAGADOS`: Apaga todos los LEDs del módulo.
-- `LEDS_ENCENDIDOS`: Enciende todos los LEDs del módulo en función de la posición del potenciómetro.
-- `LED_INDIVIDUAL`: Enciende un único LED individual que se aproximará a la posición del potenciómetro.
-
-### Configuración de puertos
-
-Si deseas configurar puertos personalizados, puedes usar la función `configPort()` para asignar los pines y configuraciones de puertos que necesitas. Esta función no se encuentra disponible en el código proporcionado, pero puedes adaptarla si es necesario para tu caso.
-
+* `LEDS_APAGADOS`, `LEDS_ENCENDIDOS`, `LED_INDIVIDUAL`: Constantes para configurar el modo de los LEDs.
