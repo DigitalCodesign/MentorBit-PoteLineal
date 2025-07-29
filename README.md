@@ -1,55 +1,125 @@
-# MentorBitPotenciometroLineal
+# MentorBit-PoteLineal
 
-Librería para el uso de potenciómetros lineales con LEDs integrados en módulos compatibles con MentorBit.
+Esta librería está diseñada para que puedas leer fácilmente la posición del módulo **potenciómetro lineal** conectado a tu placa MentorBit mediante el **protocolo I2C**.
+
+Si estás empezando en el mundo de la electrónica, ¡no te preocupes! MentorBit está pensado para que aprender sea fácil y divertido. Esta placa ya incluye un montón de componentes (LEDs, pulsadores, pantallas, etc.) y utiliza conectores especiales (JST) para que puedas añadir nuevos sensores y módulos sin tener que pelearte con un montón de cables. Pásate por nuestra web para saber más de MentorBit y nuestros productos [pinchando aquí](https://digitalcodesign.com/).
+
+![Render del MentorBit módulo de potenciómetro lineal.](https://github.com/DigitalCodesign/MentorBit-PoteLineal/blob/main/assets/PoteLineal_Module.png)
+
+Con esta librería, podrás obtener la posición lineal de un potenciómetro para usarlo como control de entrada en tus proyectos.
+
+---
 
 ## Descripción
 
-La librería `MentorBitPotenciometroLineal` facilita la lectura de potenciómetros lineales con LEDs integrados, comunicándose a través del protocolo I2C, en módulos compatibles con MentorBit. Permite leer la posición del potenciómetro, configurar el comportamiento de los LEDs (encendido/apagado automático o control individual), y cambiar la dirección I2C del módulo.
+### ¿Qué es un potenciómetro lineal?
 
-## Modo de Empleo
+Un potenciómetro lineal es un sensor analógico que varía su resistencia según la posición de un deslizador a lo largo de un eje lineal. Es ampliamente utilizado para:
 
-1.  **Instalación:**
-    * Abre el IDE compatible con MentorBit.
-    * Ve a "Herramientas" -> "Gestionar librerías..."
-    * Busca "MentorBitPotenciometroLineal" e instálala.
+- Controlar velocidad, volumen o intensidad.
+- Detectar desplazamientos lineales.
+- Crear interfaces físicas para proyectos interactivos.
 
-2.  **Ejemplo básico:**
+Al estar integrado en un **módulo I2C para MentorBit**, su lectura es directa y sin necesidad de usar pines analógicos dedicados.
 
-    ```c++
-    #include <MentorBitPotenciometroLineal.h>
+---
 
-    MentorBitPoteLineal pote; // Crea un objeto para el potenciómetro lineal
+### ¿Qué hace esta librería?
 
-    void setup() {
-      Serial.begin(9600);
-      pote.configurarLeds(pote.LEDS_ENCENDIDOS); // Enciende los LEDs automáticamente
-    }
+La librería **MentorBit-PoteLineal** permite:
 
-    void loop() {
-      uint16_t valor = pote.obtenerLectura(); // Obtiene la lectura del potenciómetro
-      Serial.print("Valor del potenciómetro: ");
-      Serial.println(valor);
-      delay(100);
-    }
-    ```
+- Inicializar el módulo y la comunicación I2C.
+- Leer la posición actual del potenciómetro como un valor entero.
+- Mapear fácilmente la lectura a rangos útiles para controlar tus proyectos.
 
-## Constructor y Métodos Públicos
+---
 
-### Constructor
+### ¿Qué puedes construir con este módulo?
 
-* `MentorBitPoteLineal(uint8_t i2c_addr = 0x18)`: Crea un objeto `MentorBitPoteLineal`.
-    * `i2c_addr`: Dirección I2C del módulo. El valor predeterminado es `0x18`.
+- Controles deslizantes para interfaces interactivas.
+- Ajuste de velocidad o brillo en tiempo real.
+- Entrada de posición para robots o mecanismos lineales.
+- Instrumentos musicales o juegos interactivos.
 
-### Métodos
+---
 
-* `uint16_t obtenerLectura()`: Devuelve la lectura del potenciómetro (un valor de 16 bits).
-* `void configurarLeds(uint8_t modo_leds)`: Configura el modo de funcionamiento de los LEDs.
-    * `modo_leds`: Puede ser `LEDS_APAGADOS` (apaga los LEDs), `LEDS_ENCENDIDOS` (enciende los LEDs automáticamente según la posición del potenciómetro) o `LED_INDIVIDUAL` (permite controlar LEDs individuales).
-* `void encenderLed(uint8_t numero_led)`: Enciende un LED individual.
-    * `numero_led`: Número del LED a encender (0-7).
-* `void cambiarDireccionI2c(uint8_t i2c_addr)`: Cambia la dirección I2C del módulo.
-    * `i2c_addr`: Nueva dirección I2C.
+## Cómo empezar
 
-## Constantes Públicas
+### 1. **Conexión del Módulo**
 
-* `LEDS_APAGADOS`, `LEDS_ENCENDIDOS`, `LED_INDIVIDUAL`: Constantes para configurar el modo de los LEDs.
+Conecta el módulo de potenciómetro lineal a uno de los **puertos I2C** con conector JST de 4 pines en la sección "Comunicaciones" de la placa MentorBit.
+
+### 2. **Instalación de la Librería**
+
+- Abre tu entorno de programación IDE de Arduino.
+- Ve al menú *Programa -> Incluir Librería -> Administrar Librerías...*
+- En el buscador, escribe ***MentorBit-PoteLineal*** y haz clic en "Instalar".
+
+![Ejemplo de búsqueda en el gestor de librerías del IDE de Arduino.](https://github.com/DigitalCodesign/MentorBit-PoteLineal/blob/main/assets/library_instalation_example.png)
+
+---
+
+## Ejemplo Básico: Leer posición lineal
+
+Este ejemplo lee la posición del potenciómetro y la imprime por el monitor serie.
+
+```cpp
+// Se incluye la libreria del potenciometro lineal de MentorBit
+#include <MentorBitPoteLineal.h>
+
+// Se crea el objeto Potenciometro
+MentorBitPoteLineal potenciometro;
+
+void setup() {
+    // Inicializamos el bus serial a una velocidad de 9600 baudios
+    Serial.begin(9600);
+}
+
+void loop() {
+    // Se imprime por pantalla el valor del potenciometro
+    Serial.println("Valor del potenciometro: " + String(potenciometro.obtenerLectura()));
+    // Delay para no llenar el monitor serial de mensajes
+    delay(1000);
+}
+```
+
+---
+
+## Funciones Principales
+
+- `uint16_t obtenerLectura()`  
+  Devuelve el valor analógico actual del potenciómetro.
+
+- `void configurarLeds(uint8_t modo_leds)`  
+  Configura el funcionamiento de los leds entre los tres tipos diferentes (apagados, encendidos o individual).
+
+- `void encenderLed(uint8_t numero_led)`  
+  Desactiva el funcionamiento normal de los leds y enciende el led indicado manualmente.
+
+- `void cambiarDireccionI2c(uint8_t i2c_addr)`  
+  Cambia la dirección I2C del módulo. Este inicializa el protocolo I2C inmediatamente con la nueva dirección.
+
+---
+
+## Atributos Principales (clase pote)
+
+- `pote.LEDS_APAGADOS`  
+  Atributo para configurar el funcionamiento de los LEDs del módulo. Apaga los LEDs.
+
+- `pote.LEDS_ENCENDIDOS`  
+  Atributo para configurar el funcionamiento de los LEDs del módulo. Enciende los LEDs en funcionamiento normal.
+
+- `pote.LED_INDIVIDUAL`  
+  Atributo para configurar el funcionamiento de los LEDs del módulo. Enciende los LEDs en funcionamiento individual.
+
+---
+
+## Recursos Adicionales
+
+- [Web del fabricante](https://digitalcodesign.com/)
+- [Tienda Online de Canarias](https://canarias.digitalcodesign.com/shop)
+- [Tienda Online de Península](https://digitalcodesign.com/shop)
+- [Web Oficial de MentorBit](https://digitalcodesign.com/mentorbit)
+- [Web Oficial del Módulo Pote Lineal](https://canarias.digitalcodesign.com/shop/00038997-mentorbit-modulo-potenciometro-lineal-8131?category=226&order=create_date+desc#attr=)
+- [Manual de usuario del Módulo](https://drive.google.com/file/d/1zwP4gsq2a6HzFGNhUjc8im9lB7dJZ98g/view?usp=drive_link)
+- [Modelo 3D del Módulo en formato .STEP](https://drive.google.com/file/d/1p9H8I0K-evh7kxRTC7hVOVMObrgpWRWd/view?usp=drive_link)
